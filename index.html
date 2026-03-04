@@ -64,10 +64,12 @@
         }
 
         .wrapped-text-container {
-            position: relative;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 10;
-            padding: 20px;
-            max-width: 80%;
         }
 
         .wrapped-text {
@@ -79,9 +81,10 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 100%;
+            width: 90%;
+            text-align: center;
             opacity: 0;
-            transition: opacity 1.5s ease;
+            transition: opacity 1.5s ease, transform 1s ease;
         }
 
         .wrapped-text.active {
@@ -89,10 +92,12 @@
         }
 
         #btnBukaKado {
-            margin-top: 150px; /* Jarak agar tidak menutupi teks */
+            position: absolute;
+            top: 65%;
+            left: 50%;
+            transform: translateX(-50%);
             opacity: 0;
             transition: opacity 1s ease;
-            position: relative;
             z-index: 11;
         }
 
