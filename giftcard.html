@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dear Annisyah Diva Setiani</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap');
+
+        body {
+            background: linear-gradient(135deg, #ffd1dc 0%, #ff9eb5 100%);
+            font-family: 'Quicksand', sans-serif;
+            margin: 0;
+            overflow: hidden; /* Mencegah scroll */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* --- CSS UNTUK INTRO SPOTIFY WRAPPED --- */
+        #wrappedIntro {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(180deg, #ff4d85 0%, #d81b60 100%);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: opacity 1s ease, visibility 1s;
+        }
+
+        #bubbleContainer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .photo-bubble {
+            position: absolute;
+            bottom: -150px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            border: 4px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            opacity: 0.8;
+            animation: floatBubble linear infinite;
+        }
+
+        @keyframes floatBubble {
+            0% { transform: translateY(0) scale(0.8); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-120vh) scale(1.2); opacity: 0; }
+        }
+
+        .wrapped-text-container {
+            position: relative;
+            z-index: 10;
+            padding: 20px;
+            max-width: 80%;
+        }
+
+        .wrapped-text {
+            font-family: 'Fredoka One', cursive;
+            color: #ffffff;
+            font-size: 2.5em;
+            text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        .wrapped-text.active {
+            opacity: 1;
+        }
+
+        #btnBukaKado {
+            margin-top: 150px; /* Jarak agar tidak menutupi teks */
+            opacity: 0;
+            transition: opacity 1s ease;
+            position: relative;
+            z-index: 11;
+        }
+
+        /* --- CSS UNTUK KARTU UTAMA & GAME (Sama seperti sebelumnya) --- */
+        #mainContent {
+            display: none; /* Disembunyikan sampai intro selesai */
+            width: 100%;
+            height: 100vh;
+            display: flex; /* Override display none later in JS */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            border-radius: 35px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 50px rgba(255, 105, 180, 0.3);
+            text-align: center;
+            max-width: 380px;
+            width: 90%;
+            position: relative;
+            z-index: 10;
+            border: 3px solid #fff;
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: #ff4d85;
+            margin-bottom: 5px;
+            font-size: 2.2em;
+        }
+
+        p {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .photo-frame {
+            width: 170px;
+            height: 170px;
+            border-radius: 50%;
+            border: 8px solid #ffb6c1;
+            margin: 15px auto;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(255, 105, 180, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 10px 25px rgba(255, 105, 180, 0.4); }
+            50% { transform: scale(1.03); box-shadow: 0 15px 35px rgba(255, 105, 180, 0.6); }
+            100% { transform: scale(1); box-shadow: 0 10px 25px rgba(255, 105, 180, 0.4); }
+        }
+
+        .photo-frame img { width: 100%; height: 100%; object-fit: cover; }
+
+        .btn {
+            background: linear-gradient(45deg, #ff4d85, #ff75a3);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(255, 77, 133, 0.4);
+            margin: 5px;
+        }
+
+        .btn:hover { transform: translateY(-3px) scale(1.05); }
+
+        .btn-tidak { background: #ccc; color: #555; box-shadow: none; }
+        .btn-tidak:hover { background: #bbb; transform: none; }
+
+        #gameSection, #loveMoreSection, #secretMessage { display: none; }
+
+        #gameSection h2 { color: #d81b60; margin-bottom: 20px; font-size: 1.5em; }
+
+        .button-group { display: flex; justify-content: center; align-items: center; gap: 15px; flex-wrap: wrap; min-height: 80px; }
+
+        .big-love {
+            font-family: 'Fredoka One', cursive;
+            color: #ff1a66;
+            font-size: 2.8em;
+            line-height: 1.2;
+            margin: 20px 0;
+            animation: popLove 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popLove {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .hidden-message {
+            margin-top: 15px;
+            padding: 20px;
+            background: #fff0f3;
+            border-radius: 20px;
+            border: 2px dashed #ff85a2;
+            color: #d81b60;
+            font-weight: bold;
+            font-size: 1.1em;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp { 0% { transform: translateY(30px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+
+        .heart {
+            position: absolute;
+            color: #fff;
+            opacity: 0.7;
+            animation: floatUp linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes floatUp { 0% { transform: translateY(100vh) scale(0.5) rotate(0deg); opacity: 1; } 100% { transform: translateY(-10vh) scale(1.5) rotate(360deg); opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop>
+        <source src="countonme.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="wrappedIntro">
+        <div id="bubbleContainer"></div>
+        <div class="wrapped-text-container">
+            <div id="text1" class="wrapped-text">Dear Annisyah Diva Setiani</div>
+            <div id="text2" class="wrapped-text">Terimakasih sudah berjuang sejauh ini, kamu keren!</div>
+            
+            <button id="btnBukaKado" class="btn" onclick="masukKeMainSite()">Next</button>
+        </div>
+    </div>
+
+    <div id="hearts-container" style="display: none;"></div>
+
+    <div id="mainContent" style="display: none;">
+        <div class="card" id="mainCard">
+            
+            <div id="introSection">
+                <h1>Happy Birthday Sayangggg!!!</h1>
+                <div class="photo-frame">
+                    <img src="fotoutama.jpeg" alt="Foto Pacar">
+                </div>
+                <p>I have something for you</p>
+                <button class="btn" onclick="startSurprise()">Next</button>
+            </div>
+
+            <div id="gameSection">
+                <h2 id="questionText">I wanna to ask you, do you love me?</h2>
+                <div class="button-group">
+                    <button class="btn" id="btnIya" onclick="clickIya()">YESSS</button>
+                    <button class="btn btn-tidak" id="btnTidak" onclick="clickTidak()">No</button>
+                </div>
+            </div>
+
+            <div id="loveMoreSection">
+                <div class="big-love">I LOVE U MOREEE BABEEEE!!! </div>
+                <button class="btn" style="margin-top: 20px;" onclick="showFinalMessage()">Next</button>
+            </div>
+
+            <div id="secretMessage" class="hidden-message">
+                Selamat ulang tahun sayang, semoga semua hal baik mengikuti sayang. I love u!
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        /* --- LOGIKA UNTUK INTRO WRAPPED --- */
+        
+        // PENTING: Di sini tempat kamu memasukkan 20 link foto kalian.
+        // Ganti URL di dalam tanda kutip dengan link foto aslimu.
+        const fotoGelembung = [
+            "foto1.jpeg",
+            "foto2.jpeg",
+            "foto3.jpeg",
+            "foto4.jpeg",
+            "foto5.jpeg",
+            "foto6.jpeg",
+            "foto7.jpeg",
+            "foto8.jpeg",
+            "foto9.jpeg",
+            "foto10.jpeg",
+            "foto11.jpeg",
+            "foto12.jpeg",
+            "foto13.jpeg",
+            "foto14.jpeg",
+            "foto15.jpeg",
+            "foto16.jpeg",
+            "foto17.jpeg",
+            "foto18.jpeg",
+            "foto19.jpeg",
+            "foto20.jpeg"
+        ];
+
+        // Membuat gelembung foto
+        const bubbleContainer = document.getElementById('bubbleContainer');
+        fotoGelembung.forEach((foto, index) => {
+            let bubble = document.createElement('div');
+            bubble.classList.add('photo-bubble');
+            bubble.style.backgroundImage = `url('${foto}')`;
+            
+            // Ukuran acak antara 60px sampai 120px
+            let size = Math.random() * 60 + 60; 
+            bubble.style.width = `${size}px`;
+            bubble.style.height = `${size}px`;
+            
+            // Posisi horizontal acak
+            bubble.style.left = `${Math.random() * 90}vw`; 
+            
+            // Kecepatan melayang acak
+            bubble.style.animationDuration = `${Math.random() * 8 + 6}s`; 
+            
+            // Waktu mulai acak agar tidak keluar bersamaan
+            bubble.style.animationDelay = `${Math.random() * 5}s`; 
+            
+            bubbleContainer.appendChild(bubble);
+        });
+
+        // Animasi Teks Wrapped
+        setTimeout(() => {
+            document.getElementById('text1').classList.add('active'); // Memunculkan teks 1
+        }, 500);
+
+        setTimeout(() => {
+            document.getElementById('text1').classList.remove('active'); // Menghilangkan teks 1
+            document.getElementById('text2').classList.add('active'); // Memunculkan teks 2
+        }, 4000); // Ganti teks pada detik ke-4
+
+        setTimeout(() => {
+            document.getElementById('text2').style.transform = "translate(-50%, -100%)"; // Mengangkat teks 2 sedikit
+            document.getElementById('btnBukaKado').style.opacity = '1'; // Memunculkan tombol Lanjut
+        }, 7500); // Munculkan tombol pada detik ke-7.5
+
+        // Fungsi berpindah dari Intro ke Main Site
+        function masukKeMainSite() {
+            document.getElementById('wrappedIntro').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('wrappedIntro').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'flex';
+                document.getElementById('hearts-container').style.display = 'block';
+            }, 1000); // Menunggu animasi fade out intro selesai
+        }
+
+
+        /* --- LOGIKA UNTUK GAME & KARTU (Sama seperti sebelumnya) --- */
+        let tidakCount = 0;
+        let ukuranIya = 1.1;
+        let paddingIya = 12;
+
+        function startSurprise() {
+            document.getElementById('bgMusic').play();
+            document.getElementById('introSection').style.display = 'none';
+            document.getElementById('gameSection').style.display = 'block';
+        }
+
+        function clickTidak() {
+            tidakCount++;
+            const btnIya = document.getElementById('btnIya');
+            const btnTidak = document.getElementById('btnTidak');
+            const questionText = document.getElementById('questionText');
+
+            ukuranIya += 0.4;
+            paddingIya += 5;
+            btnIya.style.fontSize = ukuranIya + 'em';
+            btnIya.style.padding = paddingIya + 'px ' + (paddingIya * 2) + 'px';
+
+            let scaleTidak = 1 - (tidakCount * 0.2);
+            btnTidak.style.transform = `scale(${scaleTidak})`;
+
+            if (tidakCount === 1) {
+                questionText.innerText = "Anjay yakin?";
+            } else if (tidakCount === 2) {
+                questionText.innerText = "Beneran?! Jahat banget dah";
+            } else if (tidakCount === 3) {
+                questionText.innerText = "WOIII";
+                btnTidak.style.display = 'none';
+            }
+        }
+
+        function clickIya() {
+            document.getElementById('gameSection').style.display = 'none';
+            document.getElementById('loveMoreSection').style.display = 'block';
+        }
+
+        function showFinalMessage() {
+            document.getElementById('loveMoreSection').style.display = 'none';
+            document.getElementById('introSection').style.display = 'block';
+            document.getElementById('introSection').querySelector('button').style.display = 'none';
+            document.getElementById('introSection').querySelector('p').style.display = 'none';
+            document.getElementById('secretMessage').style.display = 'block';
+        }
+
+        // Efek Hati di background utama
+        function createHearts() {
+            const container = document.getElementById('hearts-container');
+            for (let i = 0; i < 35; i++) {
+                let heart = document.createElement('div');
+                heart.innerHTML = '❤';
+                heart.classList.add('heart');
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 5 + 3) + 's'; 
+                heart.style.animationDelay = Math.random() * 3 + 's';
+                heart.style.fontSize = (Math.random() * 25 + 10) + 'px'; 
+                const colors = ['#ffffff', '#ffb6c1', '#ff85a2'];
+                heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+                container.appendChild(heart);
+            }
+        }
+        createHearts();
+    </script>
+</body>
+</html>
